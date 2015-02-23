@@ -4,7 +4,7 @@ import Text.CSV
 import Math.Statistics
 
 archivo :: String 
-archivo = "/home/juan/Programacion/Haskell/Prob/datos.csv"
+archivo = "/home/juan/Programacion/Haskell/Prob/tpPyE/datos.csv"
 
 main :: IO ()
 main = do
@@ -13,10 +13,10 @@ main = do
       hacer f = either handleError (doWork f) datos
       maximo = hacer maximum
       minimo = hacer minimum
-      rango = hacer calcularRango
-      mediana = hacer calcularMediana
-      media = hacer calcularMedia
-      desviacionStandard = hacer calcularDStd
+      rango = hacer range
+      mediana = hacer median
+      media = hacer mean
+      desviacionStandard = hacer stddev
     in
    putStr ("\n El maximo es: "++maximo++
            "\n El minimo es: "++minimo++
@@ -26,21 +26,13 @@ main = do
            "\n La desviacion standard es: "++desviacionStandard++
            "\n\n")
 
-calcularRango :: [Int] -> Integer
-calcularRango = range . (map fromIntegral)
-calcularDStd :: [Int] -> Double 
-calcularDStd = stddev . (map fromIntegral)
-calcularMedia :: [Int] -> Double
-calcularMedia = mean . (map fromIntegral)
-calcularMediana :: [Int] -> Double
-calcularMediana = median . (map fromIntegral)
-
 handleError :: forall t. t -> String
 handleError _  = "Error"
-doWork :: forall b. Show b => ([Int] -> b) -> [[String]] -> String
+doWork :: forall b. Show b => ([Double] -> b) -> [[String]] -> String
 doWork f csvData = (show.f.(map valor).tail) csvData
-valor :: [String] -> Int
-valor [_,b] = toInt b
-toInt :: String -> Int
-toInt = read
+
+valor :: [String] -> Double
+valor [_,b] = toDouble b
+toDouble :: String -> Double
+toDouble = read
 
